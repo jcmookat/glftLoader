@@ -84,9 +84,16 @@ scene.add(hemiLight)
 
 // DirectLight
 
-const directLight = new THREE.DirectionalLight(0xcccccc, 4)
-directLight.position.set(0.5, 0, 0.866) // ~60º
-camera.add(directLight)
+const directLight = new THREE.DirectionalLight('skyblue', 2.1)
+directLight.position.set(2, 0, 0) // ~60º
+scene.add(directLight)
+
+const directLight2 = new THREE.DirectionalLight(0xcccccc, 1.25)
+directLight2.position.set(0.5, 0, 0.866) // ~60º
+camera.add(directLight2)
+
+// const pointLightHelper = new THREE.PointLightHelper(directLight, 1)
+// scene.add(pointLightHelper)
 
 const spotLight = new THREE.SpotLight('red', 2)
 spotLight.position.set(0.5, 5, 0.866) // ~60º
