@@ -35,16 +35,20 @@ loader.load(
  * Sizes
  */
 let windowWidth = window.innerWidth
+let windowHeight = window.innerHeight
 let container = document.getElementById('voxel')
 let containerWidth
 let containerHeight
 
-if (windowWidth < 992) {
-	containerWidth = windowWidth
-} else {
-	containerWidth = windowWidth / 2
-}
-containerHeight = containerWidth // Square Container
+// if (windowWidth < 992) {
+// 	containerWidth = windowWidth
+// } else {
+// 	containerWidth = windowWidth / 2
+// }
+// containerHeight = containerWidth // Square Container
+
+containerWidth = windowWidth
+containerHeight = windowHeight
 
 container.style.width = containerWidth + 'px'
 container.style.height = containerHeight + 'px'
@@ -109,13 +113,18 @@ window.addEventListener('resize', () => {
 	// Update sizes
 
 	windowWidth = window.innerWidth
+	windowHeight = window.innerHeight
 
-	if (windowWidth < 992) {
-		containerWidth = windowWidth
-	} else {
-		containerWidth = windowWidth / 2
-	}
-	containerHeight = containerWidth // Square Container
+	// if (windowWidth < 992) {
+	// 	containerWidth = windowWidth
+	// } else {
+	// 	containerWidth = windowWidth / 2
+	// }
+
+	//containerHeight = containerWidth // Square container
+
+	containerWidth = windowWidth
+	containerHeight = windowHeight
 
 	container.style.width = containerWidth + 'px'
 	container.style.height = containerHeight + 'px'
