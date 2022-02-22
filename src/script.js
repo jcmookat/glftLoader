@@ -2,81 +2,140 @@ import './style.css'
 import * as THREE from 'three'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js'
 import * as dat from 'dat.gui'
+import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js'
+import { DRACOLoader } from 'three/examples/jsm/loaders/DRACOLoader'
 
 // Debug
-const gui = new dat.GUI()
+// const gui = new dat.GUI()
 
 // Canvas
 const canvas = document.querySelector('canvas.webgl')
 
 // Scene
 const scene = new THREE.Scene()
+// scene.background = new THREE.Color(0xffffff)
 
-// Objects
-const geometry = new THREE.TorusGeometry( .7, .2, 16, 100 );
-
-// Materials
-
-const material = new THREE.MeshBasicMaterial()
-material.color = new THREE.Color(0xff0000)
-
-// Mesh
-const sphere = new THREE.Mesh(geometry,material)
-scene.add(sphere)
-
-// Lights
-
-const pointLight = new THREE.PointLight(0xffffff, 0.1)
-pointLight.position.x = 2
-pointLight.position.y = 3
-pointLight.position.z = 4
-scene.add(pointLight)
+// Model
+const loader = new GLTFLoader()
+loader.setDRACOLoader(DRACOLoader)
+loader.load(
+	'models/embeddedCenterChair.glb',
+	(gltf) => {
+		scene.add(gltf.scene)
+	},
+	(xhr) => {
+		console.log((xhr.loaded / xhr.total) * 100 + '% loaded')
+	},
+	(error) => {
+		console.log(error)
+	},
+)
 
 /**
  * Sizes
  */
-const sizes = {
-    width: window.innerWidth,
-    height: window.innerHeight
+let windowWidth = window.innerWidth
+let container = document.getElementById('voxel')
+let containerWidth
+let containerHeight
+
+if (windowWidth < 992) {
+	containerWidth = windowWidth
+} else {
+	containerWidth = windowWidth / 2
 }
+containerHeight = containerWidth // Square Container
 
-window.addEventListener('resize', () =>
-{
-    // Update sizes
-    sizes.width = window.innerWidth
-    sizes.height = window.innerHeight
+container.style.width = containerWidth + 'px'
+container.style.height = containerHeight + 'px'
 
-    // Update camera
-    camera.aspect = sizes.width / sizes.height
-    camera.updateProjectionMatrix()
-
-    // Update renderer
-    renderer.setSize(sizes.width, sizes.height)
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2))
-})
-
+let sizes = {
+	width: containerWidth,
+	height: containerHeight,
+}
 /**
  * Camera
  */
 // Base camera
-const camera = new THREE.PerspectiveCamera(75, sizes.width / sizes.height, 0.1, 100)
-camera.position.x = 0
-camera.position.y = 0
-camera.position.z = 2
+const camera = new THREE.PerspectiveCamera(
+	80,
+	sizes.width / sizes.height,
+	1,
+	500,
+)
+camera.position.x = 8
+camera.position.y = 5.8
+camera.position.z = 10
 scene.add(camera)
 
+// Lights
+
+// Ambient
+const ambientLight = new THREE.AmbientLight(0xcccccc, 0.3)
+camera.add(ambientLight)
+
+// HemisphereLight
+const hemiLight = new THREE.HemisphereLight()
+scene.add(hemiLight)
+
+// DirectLight
+
+const directLight = new THREE.DirectionalLight(0xcccccc, 3)
+directLight.position.set(0.5, 0, 0.866) // ~60º
+camera.add(directLight)
 // Controls
-// const controls = new OrbitControls(camera, canvas)
-// controls.enableDamping = true
+const controls = new OrbitControls(camera, canvas)
+controls.enableDamping = true
+controls.autoRotate = true
+controls.autoRotateSpeed = -1.2
+controls.screenSpacePanning = true
 
 /**
  * Renderer
  */
 const renderer = new THREE.WebGLRenderer({
-    canvas: canvas
+	canvas: canvas,
+	antialias: true,
+	alpha: true,
 })
 renderer.setSize(sizes.width, sizes.height)
 renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2))
+
+renderer.physicallyCorrectLights = true
+renderer.outputEncoding = THREE.sRGBEncoding
+// renderer.setClearColor(0xcccccc)
+
+window.addEventListener('resize', () => {
+	// Update sizes
+
+	windowWidth = window.innerWidth
+
+	if (windowWidth < 992) {
+		containerWidth = windowWidth
+	} else {
+		containerWidth = windowWidth / 2
+	}
+	containerHeight = containerWidth // Square Container
+
+	container.style.width = containerWidth + 'px'
+	container.style.height = containerHeight + 'px'
+
+	sizes = {
+		width: containerWidth,
+		height: containerHeight,
+	}
+
+	// Update camera
+	camera.aspect = sizes.width / sizes.height
+	camera.updateProjectionMatrix()
+
+	// Update renderer
+	renderer.setSize(sizes.width, sizes.height)
+	renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2))
+
+	renderer.render(scene, camera)
+	console.log('test')
+})
 
 /**
  * Animate
@@ -84,22 +143,20 @@ renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2))
 
 const clock = new THREE.Clock()
 
-const tick = () =>
-{
+const tick = () => {
+	const elapsedTime = clock.getElapsedTime()
 
-    const elapsedTime = clock.getElapsedTime()
+	// Update objects
+	// sphere.rotation.y = 0.5 * elapsedTime
 
-    // Update objects
-    sphere.rotation.y = .5 * elapsedTime
+	// Update Orbital Controls
+	controls.update()
 
-    // Update Orbital Controls
-    // controls.update()
+	// Render
+	renderer.render(scene, camera)
 
-    // Render
-    renderer.render(scene, camera)
-
-    // Call tick again on the next frame
-    window.requestAnimationFrame(tick)
+	// Call tick again on the next frame
+	window.requestAnimationFrame(tick)
 }
 
 tick()
