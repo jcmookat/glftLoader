@@ -75,7 +75,7 @@ scene.add(camera)
 // Lights
 
 // Ambient
-const ambientLight = new THREE.AmbientLight(0xcccccc, 0.3)
+const ambientLight = new THREE.AmbientLight(0xcccccc, 0.75)
 camera.add(ambientLight)
 
 // HemisphereLight
@@ -84,9 +84,15 @@ scene.add(hemiLight)
 
 // DirectLight
 
-const directLight = new THREE.DirectionalLight(0xcccccc, 3)
+const directLight = new THREE.DirectionalLight(0xcccccc, 4)
 directLight.position.set(0.5, 0, 0.866) // ~60º
 camera.add(directLight)
+
+const spotLight = new THREE.SpotLight('red', 5)
+spotLight.position.set(0.5, 1, 0.866) // ~60º
+spotLight.castShadow = false
+camera.add(spotLight)
+
 // Controls
 const controls = new OrbitControls(camera, canvas)
 controls.enableDamping = true
