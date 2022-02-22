@@ -96,7 +96,7 @@ camera.add(spotLight)
 // Controls
 const controls = new OrbitControls(camera, canvas)
 controls.enableDamping = true
-// controls.autoRotate = true
+controls.autoRotate = true
 controls.autoRotateSpeed = -1.2
 controls.screenSpacePanning = true
 
