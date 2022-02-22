@@ -88,15 +88,15 @@ const directLight = new THREE.DirectionalLight(0xcccccc, 4)
 directLight.position.set(0.5, 0, 0.866) // ~60º
 camera.add(directLight)
 
-const spotLight = new THREE.SpotLight('red', 5)
-spotLight.position.set(0.5, 1, 0.866) // ~60º
+const spotLight = new THREE.SpotLight('red', 2)
+spotLight.position.set(0.5, 5, 0.866) // ~60º
 spotLight.castShadow = false
 camera.add(spotLight)
 
 // Controls
 const controls = new OrbitControls(camera, canvas)
 controls.enableDamping = true
-controls.autoRotate = true
+// controls.autoRotate = true
 controls.autoRotateSpeed = -1.2
 controls.screenSpacePanning = true
 
@@ -149,7 +149,6 @@ window.addEventListener('resize', () => {
 	renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2))
 
 	renderer.render(scene, camera)
-	console.log('test')
 })
 
 /**
